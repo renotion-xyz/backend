@@ -20,9 +20,15 @@ type TXTRecordDetails struct {
 	Value string `json:"value"`
 }
 
-type CustomHostnameInfoResponse struct {
+type DomainStatus struct {
+	Page             string                           `json:"page"`
+	TokenID          string                           `json:"tokenID"`
 	Hostname         string                           `json:"hostname"`
 	OwnershipStatus  cloudflare.OwnerhsipStatus       `json:"ownershipStatus"`
 	SSLStatus        cloudflare.SSLVerificationStatus `json:"sslStatus"`
 	TXTRecordDetails *TXTRecordDetails                `json:"txtRecordDetails"`
+}
+
+type DomainsListResponse struct {
+	Domains []DomainStatus `json:"domains"`
 }

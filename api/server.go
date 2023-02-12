@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/renotion-xyz/backend/cloudflare"
 	"github.com/renotion-xyz/backend/moralis"
 	"github.com/renotion-xyz/backend/web3"
@@ -27,9 +28,11 @@ func NewServer(
 	token string,
 ) *ApiServer {
 	app := fiber.New()
+	app.Use(cors.New())
 
 	api := app.Group("/api")
 	api.Get("/tokens/:owner", getListTokensHandler(mc, token))
+	api.Get("/domains/:owner", getListDomainsHandler(mc, rnt, cf, token))
 	api.Get("/metadata/:tokenID", getDomainMetadataHandler(rnt))
 	api.Get("/domain/:tokenID", getDomainStatusHandler(rnt, cf))
 

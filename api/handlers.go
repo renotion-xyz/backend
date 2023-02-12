@@ -1,8 +1,6 @@
 package api
 
 import (
-	"context"
-
 	"github.com/gofiber/fiber/v2"
 	"github.com/renotion-xyz/backend/cloudflare"
 	"github.com/renotion-xyz/backend/moralis"
@@ -52,31 +50,35 @@ func getDomainStatusHandler(rnt *web3.Renotion, cf *cloudflare.CloudflareClient)
 			return fiber.ErrNotFound
 		}
 
-		ctx := context.Background()
-
-		info, err := cf.GetHostnameInfo(ctx, metadata.Hostname)
-		if _, ok := err.(*cloudflare.NotFoundError); ok {
-			info, err = cf.RegisterHostname(ctx, metadata.Hostname)
-		}
+		res, err := getDomainStatus(cf, tokenID, metadata.Hostname, metadata.Page)
 		if err != nil {
 			return err
 		}
 
-		var txtRecord *TXTRecordDetails
-		if len(info.SSL.ValidationRecords) > 0 {
-			rec := info.SSL.ValidationRecords[0]
-			txtRecord = &TXTRecordDetails{
-				Name:  rec.TxtName,
-				Value: rec.TxtValue,
-			}
+		return c.JSON(res)
+	}
+}
+
+func getListDomainsHandler(mc *moralis.MoralisClient, rnt *web3.Renotion, cf *cloudflare.CloudflareClient, token string) fiber.Handler {
+	return func(c *fiber.Ctx) error {
+		owner := c.Params("owner")
+		res, err := mc.GetNFTsByOwner(owner, token, moralis.POLYGON)
+		if err != nil {
+			return err
 		}
-		res := CustomHostnameInfoResponse{
-			Hostname:         metadata.Hostname,
-			OwnershipStatus:  cloudflare.OwnerhsipStatus(info.Status),
-			SSLStatus:        cloudflare.SSLVerificationStatus(info.SSL.Status),
-			TXTRecordDetails: txtRecord,
+		domains := make([]DomainStatus, 0, len(res.Result))
+		ch := make(chan DomainStatus)
+		for _, nft := range res.Result {
+			go func(tokenID string) {
+				metadata, _ := rnt.GetDomainMetadata(tokenID)
+				info, _ := getDomainStatus(cf, tokenID, metadata.Hostname, metadata.Page)
+				ch <- *info
+			}(nft.TokenID)
+		}
+		for i := 0; i < len(res.Result); i++ {
+			domains = append(domains, <-ch)
 		}
 
-		return c.JSON(res)
+		return c.JSON(DomainsListResponse{domains})
 	}
 }
