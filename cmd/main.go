@@ -18,6 +18,7 @@ var (
 	MORALIS_API_KEY   = os.Getenv("MORALIS_API_KEY")
 	TOKEN_ADDRESS     = os.Getenv("TOKEN_ADDRESS")
 	ZONE_NAME         = os.Getenv("ZONE_NAME")
+	CHAIN             = os.Getenv("CHAIN")
 )
 
 func init() {
@@ -29,7 +30,7 @@ func init() {
 func main() {
 	ctx := context.Background()
 
-	mc := moralis.NewClient(MORALIS_API_KEY)
+	mc := moralis.NewClient(MORALIS_API_KEY, moralis.Chain(CHAIN))
 	cf, err := cloudflare.NewClient(ctx, CF_API_TOKEN, ZONE_NAME)
 	if err != nil {
 		panic(err)

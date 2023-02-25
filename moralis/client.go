@@ -7,11 +7,13 @@ const (
 type MoralisClient struct {
 	baseUrl string
 	apiKey  string
+	chain   Chain
 }
 
-func NewClient(apiKey string) *MoralisClient {
+func NewClient(apiKey string, chain Chain) *MoralisClient {
 	return &MoralisClient{
 		apiKey:  apiKey,
 		baseUrl: MORALIS_BASE_URL,
+		chain:   chain,
 	}
 }

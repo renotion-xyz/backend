@@ -20,9 +20,9 @@ func (mc *MoralisClient) newRequest(method string, url string, body io.Reader) (
 	return req, nil
 }
 
-func (mc *MoralisClient) GetNFTsByOwner(owner string, token string, chain Chain) (*NFTsByOwnerResponse, error) {
+func (mc *MoralisClient) GetNFTsByOwner(owner string, token string) (*NFTsByOwnerResponse, error) {
 	query := url.Values{
-		"chain":              {string(chain)},
+		"chain":              {string(mc.chain)},
 		"token_addresses[0]": {token},
 		"limit":              {"100"},
 	}

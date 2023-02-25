@@ -10,7 +10,7 @@ import (
 func getListTokensHandler(mc *moralis.MoralisClient, token string) fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		owner := c.Params("owner")
-		res, err := mc.GetNFTsByOwner(owner, token, moralis.POLYGON)
+		res, err := mc.GetNFTsByOwner(owner, token)
 		if err != nil {
 			return err
 		}
@@ -62,7 +62,7 @@ func getDomainStatusHandler(rnt *web3.Renotion, cf *cloudflare.CloudflareClient)
 func getListDomainsHandler(mc *moralis.MoralisClient, rnt *web3.Renotion, cf *cloudflare.CloudflareClient, token string) fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		owner := c.Params("owner")
-		res, err := mc.GetNFTsByOwner(owner, token, moralis.POLYGON)
+		res, err := mc.GetNFTsByOwner(owner, token)
 		if err != nil {
 			return err
 		}

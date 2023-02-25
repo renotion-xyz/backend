@@ -3,5 +3,6 @@ package moralis
 type Chain string
 
 const (
-	POLYGON Chain = "polygon"
+	POLYGON_MAINNET Chain = "polygon"
+	POLYGON_TESTNET Chain = "mumbai"
 )

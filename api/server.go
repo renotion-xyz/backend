@@ -28,7 +28,10 @@ func NewServer(
 	token string,
 ) *ApiServer {
 	app := fiber.New()
-	app.Use(cors.New())
+	app.Use(cors.New(cors.Config{
+		AllowOrigins: "https://renotion-app.fly.dev, https://renotion.xyz",
+		AllowMethods: "GET,POST,HEAD",
+	}))
 
 	api := app.Group("/api")
 	api.Get("/tokens/:owner", getListTokensHandler(mc, token))
