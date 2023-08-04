@@ -3,6 +3,7 @@ package api
 import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/renotion-xyz/backend/cloudflare"
+	"github.com/renotion-xyz/backend/moonpay"
 	"github.com/renotion-xyz/backend/moralis"
 	"github.com/renotion-xyz/backend/web3"
 )
@@ -80,5 +81,17 @@ func getListDomainsHandler(mc *moralis.MoralisClient, rnt *web3.Renotion, cf *cl
 		}
 
 		return c.JSON(DomainsListResponse{domains})
+	}
+}
+
+func signMoonPayURLHandler(mp *moonpay.MoonPayClient) fiber.Handler {
+	return func(c *fiber.Ctx) error {
+		var request SignMoonPayURLRequest
+		if err := c.BodyParser(&request); err != nil {
+			return err
+		}
+		return c.JSON(SignMoonPayURLResponse{
+			URL: mp.SignURL("", request.Wallet),
+		})
 	}
 }
