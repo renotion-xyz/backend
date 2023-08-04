@@ -6,6 +6,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/renotion-xyz/backend/cloudflare"
+	"github.com/renotion-xyz/backend/moonpay"
 	"github.com/renotion-xyz/backend/moralis"
 	"github.com/renotion-xyz/backend/web3"
 )
@@ -25,6 +26,7 @@ func NewServer(
 	mc *moralis.MoralisClient,
 	cf *cloudflare.CloudflareClient,
 	rnt *web3.Renotion,
+	mp *moonpay.MoonPayClient,
 	token string,
 ) *ApiServer {
 	app := fiber.New()
@@ -38,6 +40,7 @@ func NewServer(
 	api.Get("/domains/:owner", getListDomainsHandler(mc, rnt, cf, token))
 	api.Get("/metadata/:tokenID", getDomainMetadataHandler(rnt))
 	api.Get("/domain/:tokenID", getDomainStatusHandler(rnt, cf))
+	api.Post("/moonpay/signed-url", signMoonPayURLHandler(mp))
 
 	return &ApiServer{app, mc, cf, rnt}
 }

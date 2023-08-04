@@ -13,6 +13,7 @@ kill_timeout = "5s"
 
 [env]
   PORT = "8080"
+  DEFAULT_CURRENCY = "matic"
 
 [[services]]
   protocol = "tcp"

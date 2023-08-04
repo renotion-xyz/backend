@@ -32,3 +32,11 @@ type DomainStatus struct {
 type DomainsListResponse struct {
 	Domains []DomainStatus `json:"domains"`
 }
+
+type SignMoonPayURLRequest struct {
+	Wallet string `json:"wallet"`
+}
+
+type SignMoonPayURLResponse struct {
+	URL string `json:"url"`
+}
